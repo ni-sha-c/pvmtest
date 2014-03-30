@@ -1,6 +1,6 @@
 	Omega = 0.5e0; %stands for the Omega from Norbury's paper
 	N_bound = 120;
-	r_i = 0.5e0;
+	r_i = 1.e0;
 	z_i = 0.5e0;
 	sigma = 0.275e0;
 	N_r = 3;
@@ -9,8 +9,7 @@
 	N_1 = 6;
 	N_per_theta = 1 + N_1*N_r*(N_r + 1)/2;
 	dtheta = 2.e0*pi/N_bound;
-	theta = linspace(dtheta/2.e0, 2.e0*pi-dtheta/2.e0, N_bound);
-
+	theta = linspace(dtheta/2.e0, 2.e0*pi - dtheta/2.e0, N_bound);
 	
 	ct = cos(theta);
 	st = sin(theta);
@@ -39,21 +38,25 @@
 		outline2(k) = 1.e0/(l-1)*count;
 		count = count + 1;
 	end
-		
-	r_c = repmat(2.e0*r_l*outline1, N_per_theta,1);
+
+	outliner = 2.e0*r_l*outline1;		
+	r_c = repmat(outliner, N_per_theta,1);
 	r_ct= r_c';
 	phi = repmat(pi/N_1*outline2, N_per_theta, 1);
 	phi_t = phi';
-	w = 2.e0*r_l*Omega*outline1;
 
 	magxmxi = r_c.*r_c + r_ct.*r_ct - 2.e0*(r_c.*r_ct).*(cos(phi-phi_t));
 	F_delta = compute_zeta(magxmxi,delta);
-	alpha = F_delta\w';
 
 	cp = cos(pi/N_1*outline2);
 	sp = sin(pi/N_1*outline2);
 	rcp = 2.e0*r_l*outline1.*cp;
 	rsp = 2.e0*r_l*outline1.*sp;
+
+	r2 =	outliner.*outliner + r_i*r_i + 2.e0*r_i*outliner.*sp;
+	w = Omega*sqrt(r2);
+	alpha = F_delta\w';
+
 	
 	Z = [];
 	X = [];
@@ -64,19 +67,19 @@
 		th = dtheta/2.e0 + (j-1)*dtheta;
 		sth = sin(th);
 		cth = cos(th);
-		xc = repmat(X_c(j), N_per_theta, 1);
-		yc = repmat(Y_c(j), N_per_theta, 1);
-		zc = repmat(Z_c(j), N_per_theta, 1);
+		xc = repmat(X_c(j), 1, N_per_theta);
+		yc = repmat(Y_c(j), 1, N_per_theta);
+		zc = repmat(Z_c(j), 1, N_per_theta);
 		Z = [ Z , zc + rcp ];
-		Y = [ Y , sth*rsp];
-		X = [ X , cth*rsp];
+		Y = [ Y , yc + sth*rsp];
+		X = [ X , xc + cth*rsp];
 		A1 = [ A1, sth*alpha'];
 		A2 = [ A2, -cth*alpha'];
 	end
 	
 	infile = fopen("posalpha_norbury_b.dat", "w");
-	RES = [X', Y', Z', A1', A2'];
-	fprintf(infile, " %8.6f %f %f %f %f \n", RES);
+	RES = [X; Y; Z; A1; A2];
+	fprintf(infile, " %8.6f %8.6f %8.6f %8.6f %8.6f \n", RES);
 
 	fclose(infile);
 
