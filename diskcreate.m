@@ -8,7 +8,9 @@
 	delta = 0.155;	
 	N_1 = 6;
 	N_per_theta = 1 + N_1*N_r*(N_r + 1)/2;
-	theta = linspace(0.e0, 2*pi, N_bound);
+	dtheta = 2.e0*pi/N_bound;
+	theta = linspace(dtheta/2.e0, 2.e0*pi-dtheta/2.e0, N_bound);
+
 	
 	ct = cos(theta);
 	st = sin(theta);
@@ -49,12 +51,40 @@
 	alpha = F_delta\w';
 
 	cp = cos(pi/N_1*outline2);
-	sp = sin(pi/N_l*outline2);
+	sp = sin(pi/N_1*outline2);
+	rcp = 2.e0*r_l*outline1.*cp;
+	rsp = 2.e0*r_l*outline1.*sp;
+	
+	Z = [];
+	X = [];
+	Y = [];
+	A1 = [];
+	A2 = [];
 	for j = 1:N_bound
+		th = dtheta/2.e0 + (j-1)*dtheta;
+		sth = sin(th);
+		cth = cos(th);
 		xc = repmat(X_c(j), N_per_theta, 1);
 		yc = repmat(Y_c(j), N_per_theta, 1);
 		zc = repmat(Z_c(j), N_per_theta, 1);
-	  		
+		Z = [ Z , zc + rcp ];
+		Y = [ Y , sth*rsp];
+		X = [ X , cth*rsp];
+		A1 = [ A1, sth*alpha'];
+		A2 = [ A2, -cth*alpha'];
+	end
+	
+	infile = fopen("posalpha_norbury_b.dat", "w");
+	RES = [X', Y', Z', A1', A2'];
+	fprintf(infile, " %8.6f %f %f %f %f \n", RES);
+
+	fclose(infile);
+
+	 
+
+	 	
+		
+						  		
 
 
 				
