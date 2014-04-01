@@ -9,7 +9,7 @@
 	N_1 = 6;
 	N_per_theta = 1 + N_1*N_r*(N_r + 1)/2;
 	dtheta = 2.e0*pi/N_bound;
-	theta = linspace(dtheta/2.e0, 2.e0*pi - dtheta/2.e0, N_bound);
+	theta = linspace(0.e0 , 2.e0*pi - dtheta, N_bound);
 	
 	ct = cos(theta);
 	st = sin(theta);
@@ -39,46 +39,78 @@
 		count = count + 1;
 	end
 
-	outliner = 2.e0*r_l*outline1;		
+	outliner = 2.e0*r_l*outline1;
+	outlinep = 2.e0*pi/N_1*outline2;		
 	r_c = repmat(outliner, N_per_theta,1);
 	r_ct= r_c';
-	phi = repmat(pi/N_1*outline2, N_per_theta, 1);
+	phi = repmat(outlinep, N_per_theta, 1);
 	phi_t = phi';
 
-	magxmxi = r_c.*r_c + r_ct.*r_ct - 2.e0*(r_c.*r_ct).*(cos(phi-phi_t));
-	F_delta = compute_zeta(magxmxi,delta);
+	cp = cos(phi);
+	sp = sin(phi);
+	rcp = r_c.*cp;
+	rsp = r_c.*sp;
+	rccp = outliner.*cos(outlinep);
+	rcsp = outliner.*sin(outlinep);
 
-	cp = cos(pi/N_1*outline2);
-	sp = sin(pi/N_1*outline2);
-	rcp = 2.e0*r_l*outline1.*cp;
-	rsp = 2.e0*r_l*outline1.*sp;
+	%theta = 0
+	X = rsp' + r_i;
+	Y = repmat(0.e0,N_per_theta,N_per_theta);
+	Z = rcp' + z_i;
 
-	r2 =	outliner.*outliner + r_i*r_i + 2.e0*r_i*outliner.*sp;
-	w = Omega*sqrt(r2);
-	alpha = F_delta\w';
+	Fdelta = zeros(N_per_theta,N_per_theta);
+
+	for j = 1:N_bound
+		tj = theta(j);
+		ctj = cos(tj);
+		stj = sin(tj);
+		
+		Xj = ctj*rsp + r_i*ctj;
+		Yj = stj*rsp + r_i*stj;
+		Zj =     rcp + z_i    ;
+
+		XmXj = X - Xj;
+		YmYj = Y - Yj;
+		ZmZj = Z - Zj;
+
+		mag2xmxj = XmXj.*XmXj + YmYj.*YmYj + ZmZj.*ZmZj;
+		magxmxj  = sqrt(mag2xmxj);
+
+		Fdelta = Fdelta + compute_zeta(magxmxj,delta);
+
+	end
+
+	deltaxi = 2.e0*pi/N_bound*(rcp + r_i);
+	F_delta = deltaxi.*Fdelta;
+
+%	r2 =	outliner.*outliner + r_i*r_i + 2.e0*r_i*outliner.*sp;
+%	w = Omega*sqrt(r2);
+	w = compute_omega(outliner,sigma);
+	gamma = F_delta\w';
+	alpha = gamma'.*deltaxi(1,:);
 
 	
-	Z = [];
-	X = [];
-	Y = [];
+	Zpos = [];
+	Xpos = [];
+	Ypos = [];
 	A1 = [];
 	A2 = [];
 	for j = 1:N_bound
-		th = dtheta/2.e0 + (j-1)*dtheta;
+		th =  (j-1)*dtheta;
 		sth = sin(th);
 		cth = cos(th);
 		xc = repmat(X_c(j), 1, N_per_theta);
 		yc = repmat(Y_c(j), 1, N_per_theta);
 		zc = repmat(Z_c(j), 1, N_per_theta);
-		Z = [ Z , zc + rcp ];
-		Y = [ Y , yc + sth*rsp];
-		X = [ X , xc + cth*rsp];
-		A1 = [ A1, sth*alpha'];
-		A2 = [ A2, -cth*alpha'];
+		Zpos = [ Zpos , zc + rccp ];
+		Ypos = [ Ypos , yc + sth*rcsp];
+		Xpos = [ Xpos , xc + cth*rcsp];
+		A1 = [ A1, -sth*alpha];
+		A2 = [ A2, cth*alpha];
 	end
 	
-	infile = fopen("posalpha_norbury_b.dat", "w");
-	RES = [X; Y; Z; A1; A2];
+	infile = fopen("posalpha_norbury_during_run.dat", "w");
+	RES = [Xpos; Ypos; Zpos; A1; A2];
 	fprintf(infile, " %8.6f %8.6f %8.6f %8.6f %8.6f \n", RES);
 
 	fclose(infile);
