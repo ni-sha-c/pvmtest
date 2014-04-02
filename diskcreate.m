@@ -109,7 +109,7 @@
 		A2 = [ A2, cth*alpha];
 	end
 	
-	infile = fopen("posalpha_norbury_during_run.dat", "w");
+	infile = fopen("posalpha_torus_during_run.dat", "w");
 	RES = [Xpos; Ypos; Zpos; A1; A2];
 	fprintf(infile, " %8.6f %8.6f %8.6f %8.6f %8.6f \n", RES);
 
