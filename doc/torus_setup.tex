@@ -88,6 +88,7 @@ where, $ \delta \xv_i = \delta \chiv_i(T = 0) $.
 The above equations are expressed as a system of linear equations for $\xv$ being each of the $\xv_i$ s or the centres of the elements. Hence, the system of equations solved for the circulation in the $N\_per\_\theta$ vortex tubes can be written as:
 \begin{dmath}
 \begin{bmatrix}
+<<<<<<< HEAD
 \displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j= N - N_c + 1}^{N} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j \\ 
 \displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j=N - N_c + 1}^{N} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j \\ 
 . & . & . & . & . \\ 
@@ -95,6 +96,15 @@ The above equations are expressed as a system of linear equations for $\xv$ bein
 \displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_N - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_N - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j=N - N_c + 1}^N \zeta_\delta( \xv_N - \xv_j) \delta \xv_j \\ 
 \end{bmatrix}
  \times 
+=======
+\displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j= N - N_r + 1}^{N_c*N_r} \zeta_\delta( \xv_1 - \xv_j) \delta \xv_j \\ 
+\displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j=N - N_r + 1}^{N} \zeta_\delta( \xv_2 - \xv_j) \delta \xv_j \\ 
+. & . & . & . & . \\ 
+. & . & . & . & . \\
+\displaystyle \sum_{j=1}^{N_c} \zeta_\delta( \xv_N - \xv_j) \delta \xv_j & \displaystyle \sum_{j=N_c + 1}^{2\times N_c} \zeta_\delta( \xv_N - \xv_j) \delta \xv_j & . & . &  \displaystyle \sum_{j=N - N_r + 1}^N \zeta_\delta( \xv_N - \xv_j) \delta \xv_j \\ 
+\end{bmatrix}
+ = 
+>>>>>>> FETCH_HEAD
 \begin{bmatrix}
 \Gamma_1 \\
 \Gamma_2 \\
@@ -102,7 +112,10 @@ The above equations are expressed as a system of linear equations for $\xv$ bein
 . \\
 \Gamma_N
 \end{bmatrix}
+<<<<<<< HEAD
 =
+=======
+>>>>>>> FETCH_HEAD
 \begin{bmatrix}
 \frac{1}{a\sigma^2} exp\left(-r_{\xv_1}^3/\sigma^3\right) \\
 \frac{1}{a\sigma^2} exp\left(-r_{\xv_2}^3/\sigma^3\right) \\ \\
@@ -128,7 +141,11 @@ For the discretization described above, the total circulation of the ring is clo
 For the first iteration, with 4400 particles (or vortex elements), direct evaluation and FMM computation were performed for the velocity and the stretching term of each particle.
 \begin{align}
 \frac{d\xv_i}{dt} &= \uv(\xv_i(t),t) \\
+<<<<<<< HEAD
 				&=  \frac{-1}{4\pi} \displaystyle \sum_{j=1}^{N} \frac{(\xv_i - \xv_j)^2 + (5/2) \delta^2}{((\xv_i - \xv_j)^2 + \delta^2)^{5/2}} (\xv_i - \xv_j) \times \alpha_j
+=======
+				&=  \frac{-1}{4\pi} \displaystyle \sum_{j=1}^{N} \frac{(\xv_i - \xv_j)^2 + 5/2 \delta^2}{((\xv_i - \xv_j)^2 + \delta^2)^{5/2}} (\xv_i - \xv_j) \times \alpha_j
+>>>>>>> FETCH_HEAD
 \end{align}
 
 \begin{align}
